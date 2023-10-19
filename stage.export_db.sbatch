@@ -7,8 +7,6 @@
 #SBATCH --output %x-%A.out
 #SBATCH --error %x-%A.err
 
-### --gres=gpu:1
-source activate qiime2-2023.5
 function logger () { 
     echo "$(date) :: ${@}"; 
     echo "$(date) :: ${@}" 1>&2; 
