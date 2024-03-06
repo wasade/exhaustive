@@ -34,7 +34,7 @@ xzcat -T 4 ${EX_OUT}/awk.aggregated.xz | \
         --buffer-size=100g \
         -k1,1 \
         -k2,2n | \
-        python ../deduplicate.py | \
+        python deduplicate.py | \
         xz -1 -z -c -T 4 > ${EX_OUT}/awk.aggregated.sorted.xz
 
 xzcat -T 15 ${EX_OUT}/awk.aggregated.sorted.xz | \
@@ -47,7 +47,7 @@ xzcat -T 15 ${EX_OUT}/awk.aggregated.sorted.xz | \
 OUTPUT=${EX_OUT}/exhaustive.fna
 
 
-python ../trim-to-max-length.py \
+python trim-to-max-length.py \
     ${DB_FNA_STAGED} \
     ${EX_OUT}/exhaustive.bed \
     ${EX_OUT}/exhaustive.trimmed.bed

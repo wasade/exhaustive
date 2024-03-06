@@ -16,9 +16,6 @@ set -x
 set -e
 set -o pipefail
 
-echo $TMPDIR
-
-
 if [[ "${DB_FNA}" == *".fna.xz" ]]; then
     name=$(basename ${DB_FNA} .xz)
     xzcat ${DB_FNA} > ${DB_FNA_STAGED}

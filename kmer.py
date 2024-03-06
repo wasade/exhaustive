@@ -135,11 +135,20 @@ if __name__ == '__main__':
     sjob = os.environ.get('SLURM_ARRAY_JOB_ID', 'no-slurm-id')
     stask = os.environ.get('SLURM_ARRAY_TASK_ID', 'no-slurm-array')
 
+    if os.environ.get('SLURM_ARRAY_TASK_ID') is None:
+        disable_logging = True
+    else:
+        disable_logging = False
+
     logging.basicConfig(filename=f'kmer-{nfmt}-{sjob}_{stask}.log',
                         encoding='utf-8',
                         level=logging.DEBUG,
                         format='%(asctime)s:::%(message)s',
                         datefmt="%Y.%m.%d %H:%M:%S")
+    logger = logging.getLogger()
+
+    if disable_logging:
+        logger.disabled = True
 
     k = int(sys.argv[1])
     j = int(sys.argv[2])
@@ -154,12 +163,12 @@ if __name__ == '__main__':
         if id_ is None and line.startswith('>'):
             id_ = line.strip().split(' ')[0]
         elif line.startswith('>'):
-            logging.info(f"Emitting on: {id_}")
+            logger.info(f"Emitting on: {id_}")
             check_write(id_, rec, k, j, task, ntask, buf)
             id_ = line.strip().split(' ')[0]
             rec = []
         else:
             rec.append(line.strip())
 
-    logging.info(f"Emitting on: {id_}")
+    logger.info(f"Emitting on: {id_}")
     check_write(id_, rec, k, j, task, ntask, buf)
