@@ -15,7 +15,7 @@ for i, s in zip(id_, seqs):
 
 with open(in_) as infp, open(out_, 'w') as outfp:
     for line in infp:
-        gid, start, stop, noclue = line.strip().split('\t')
+        gid, start, stop, _ = line.strip().split('\t')
         stop = int(stop)
 
         if stop > lengths[gid]:
