@@ -21,4 +21,4 @@ with open(in_) as infp, open(out_, 'w') as outfp:
         if stop > lengths[gid]:
             stop = lengths[gid]
 
-        outfp.write("%s\t%s\t%d\t%s\n" % (gid, start, stop, noclue))
+        outfp.write("%s\t%s\t%d\n" % (gid, start, stop))
