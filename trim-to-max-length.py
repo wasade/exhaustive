@@ -15,10 +15,10 @@ for i, s in zip(id_, seqs):
 
 with open(in_) as infp, open(out_, 'w') as outfp:
     for line in infp:
-        gid, start, stop, _ = line.strip().split('\t')
+        gid, start, stop, extra = line.strip().split('\t')
         stop = int(stop)
 
         if stop > lengths[gid]:
             stop = lengths[gid]
 
-        outfp.write("%s\t%s\t%d\t%s\n" % (gid, start, stop, noclue))
+        outfp.write("%s\t%s\t%d\t%s\n" % (gid, start, stop, extra))
