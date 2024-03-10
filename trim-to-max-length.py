@@ -22,3 +22,4 @@ with open(in_) as infp, open(out_, 'w') as outfp:
             stop = lengths[gid]
 
         outfp.write("%s\t%s\t%d\t%s\n" % (gid, start, stop, extra))
+

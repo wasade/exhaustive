@@ -19,40 +19,44 @@ set -x
 set -e
 set -o pipefail
 
+export LC_ALL=C
 
+python exhaustive.py process-regions \
+    --db-fna-staged ${DB_FNA_STAGED} \
+    --ex-out ${EX_OUT}   \
+    --output ${EX_OUT}/exhaustive.fna  
 #-----------------------------
 
 #Create bed path based on file input
-export LC_ALL=C
-xzcat -T 7 ${EX_OUT}/*.sam.xz | \
-    awk -F'\t' -v OFS='\t' '{sum = $4 + length($10); print $3, $4, sum, $1, $10}' | \
-    xz -1 -z -c -T 8 > ${EX_OUT}/awk.aggregated.xz
+# xzcat -T 7 ${EX_OUT}/*.sam.xz | \
+#     awk -F'\t' -v OFS='\t' '{sum = $4 + length($10); print $3, $4, sum, $1, $10}' | \
+#     xz -1 -z -c -T 8 > ${EX_OUT}/awk.aggregated.xz
 
-xzcat -T 4 ${EX_OUT}/awk.aggregated.xz | \
-    sort \
-        --parallel 8 \
-        --buffer-size=100g \
-        -k1,1 \
-        -k2,2n | \
-        python deduplicate.py | \
-        xz -1 -z -c -T 4 > ${EX_OUT}/awk.aggregated.sorted.xz
+# xzcat -T 4 ${EX_OUT}/awk.aggregated.xz | \
+#     sort \
+#         --parallel 8 \
+#         --buffer-size=100g \
+#         -k1,1 \
+#         -k2,2n | \
+#         python deduplicate.py | \
+#         xz -1 -z -c -T 4 > ${EX_OUT}/awk.aggregated.sorted.xz
 
-xzcat -T 15 ${EX_OUT}/awk.aggregated.sorted.xz | \
-    bedtools merge \
-        -i stdin \
-        -c 5 \
-        -o count > ${EX_OUT}/exhaustive.bed
-
-
-OUTPUT=${EX_OUT}/exhaustive.fna
+# xzcat -T 15 ${EX_OUT}/awk.aggregated.sorted.xz | \
+#     bedtools merge \
+#         -i stdin \
+#         -c 5 \
+#         -o count > ${EX_OUT}/exhaustive.bed
 
 
-python trim-to-max-length.py \
-    ${DB_FNA_STAGED} \
-    ${EX_OUT}/exhaustive.bed \
-    ${EX_OUT}/exhaustive.trimmed.bed
+# OUTPUT=${EX_OUT}/exhaustive.fna
 
-bedtools getfasta \
-    -fi ${DB_FNA_STAGED} \
-    -bed ${EX_OUT}/exhaustive.trimmed.bed \
-    -fo ${OUTPUT}
+
+# python trim-to-max-length.py \
+#     ${DB_FNA_STAGED} \
+#     ${EX_OUT}/exhaustive.bed \
+#     ${EX_OUT}/exhaustive.trimmed.bed
+
+# bedtools getfasta \
+#     -fi ${DB_FNA_STAGED} \
+#     -bed ${EX_OUT}/exhaustive.trimmed.bed \
+#     -fo ${OUTPUT}

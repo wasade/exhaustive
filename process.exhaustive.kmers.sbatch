@@ -37,22 +37,34 @@ fi
 mkdir -p ${EX_OUT}
 
 bt2_threads=$((${SLURM_CPUS_PER_TASK} - 2))
-for f in $(cat ${FILES})
-do
-    zcat ${f}
-done | \
-    python kmer.py ${K} ${J} ${SLURM_ARRAY_TASK_ID} ${SLURM_ARRAY_TASK_COUNT} | \
-    bowtie2 -p ${bt2_threads} \
-        -x ${DB_BT2} \
-        -f - \
-        --seed 42 \
-        --very-sensitive \
-        -k 32 \
-        --np 1 \
-        --mp "1,1" \
-        --rdg "0,1" \
-        --rfg "0,1" \
-        --score-min "L,0,-0.05" \
-        --no-head \
-        --no-unal | \
-            xz -1 -z -c > ${EX_OUT}/${SLURM_ARRAY_TASK_ID}.sam.xz
+
+python exhaustive.py process-kmers \
+    --kmer ${K} \
+    --jump ${J} \
+    --files ${FILES} \
+    --task-id ${SLURM_ARRAY_TASK_ID} \
+    --task-count ${SLURM_ARRAY_TASK_COUNT} \
+    --threads ${bt2_threads} \
+    --db-bt2 ${DB_BT2} \
+    --kmers-sam ${EX_OUT}/${SLURM_ARRAY_TASK_ID}.sam
+
+
+# for f in $(cat ${FILES})
+# do
+#     zcat ${f}
+# done | \
+#     python kmer.py ${K} ${J} ${SLURM_ARRAY_TASK_ID} ${SLURM_ARRAY_TASK_COUNT} | \
+#     bowtie2 -p ${bt2_threads} \
+#         -x ${DB_BT2} \
+#         -f - \
+#         --seed 42 \
+#         --very-sensitive \
+#         -k 32 \
+#         --np 1 \
+#         --mp "1,1" \
+#         --rdg "0,1" \
+#         --rfg "0,1" \
+#         --score-min "L,0,-0.05" \
+#         --no-head \
+#         --no-unal | \
+#             xz -1 -z -c > ${EX_OUT}/${SLURM_ARRAY_TASK_ID}.sam.xz

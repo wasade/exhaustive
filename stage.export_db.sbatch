@@ -16,9 +16,13 @@ set -x
 set -e
 set -o pipefail
 
-if [[ "${DB_FNA}" == *".fna.xz" ]]; then
-    name=$(basename ${DB_FNA} .xz)
-    xzcat ${DB_FNA} > ${DB_FNA_STAGED}
-else
-    cp ${DB_FNA} ${DB_FNA_STAGED}
-fi
+python exhaustive.py export-db \
+    --db-fna ${DB_FNA} \
+    --db-fna-staged ${DB_FNA_STAGED}
+    
+# if [[ "${DB_FNA}" == *".fna.xz" ]]; then
+#     name=$(basename ${DB_FNA} .xz)
+#     xzcat ${DB_FNA} > ${DB_FNA_STAGED}
+# else
+#     cp ${DB_FNA} ${DB_FNA_STAGED}
+# fi

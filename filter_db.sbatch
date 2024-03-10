@@ -18,16 +18,23 @@ echo $TMPDIR
 if [[ -z ${FILE} ]]; then
     FILE=${BASE_LABEL}.fna
 fi
-
-python filter_fna.py \
-    --database-fasta ${DB_FNA_STAGED} \
-    --output-fasta ${DB_FNA_STAGED}.masked \
-    --contaminated-fasta ${FILE}
-
 mamba activate bowtie2
-mkdir -p ${BASE_LABEL}-bt2
-bowtie2-build --version
-bowtie2-build \
-    --seed 42 \
-    --threads 32 ${DB_FNA_STAGED}.masked \
-    ${BASE_LABEL}-bt2/${BASE_LABEL}-bt2
+
+python exhaustive.py filter-db \
+    --database-fasta ${DB_FNA_STAGED} \
+    --contaminated-fasta ${FILE} \
+    --output-fasta ${DB_FNA_STAGED}.masked \
+    --output-bt2 ${BASE_LABEL}-bt2/${BASE_LABEL}-bt2 \
+    --threads 32
+
+# python filter_fna.py \
+#     --database-fasta ${DB_FNA_STAGED} \
+#     --output-fasta ${DB_FNA_STAGED}.masked \
+#     --contaminated-fasta ${FILE}
+
+# mkdir -p ${BASE_LABEL}-bt2
+# bowtie2-build --version
+# bowtie2-build \
+#     --seed 42 \
+#     --threads 32 ${DB_FNA_STAGED}.masked \
+#     ${BASE_LABEL}-bt2/${BASE_LABEL}-bt2
