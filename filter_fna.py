@@ -86,8 +86,7 @@ def main(database_fasta, output_fasta, contaminated_fasta):
                 seq = seq.strip()
 
                 assert id_.startswith('>')
-                id_ = id_[1:]
-
+                id_ = id_[1:].split(" ")[0]
                 if id_ in coordinates:
                     seq = mask(seq, coordinates[id_])
 

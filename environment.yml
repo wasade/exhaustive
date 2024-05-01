@@ -1,0 +1,11 @@
+name: exhaustive
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python
+  - bowtie2
+  - bedtools
+  - click
+  - numpy
